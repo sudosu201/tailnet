@@ -6,7 +6,7 @@ set -e  # Exit immediately if a command exits with a non-zero status
 TAILSCALE_VERSION=""
 SABLIER_VERSION=""
 VERSION=""
-IMAGE="sudosu-yx/tailnet"
+IMAGE="sudosu201/tailnet"
 PFX="localhost/"
 
 
@@ -98,7 +98,7 @@ podman manifest add "$MANIFEST" "${PFX}${IMAGE}:${VERSION}-arm64"
 echo
 echo "✔ Build complete"
 echo "Local images:"
-podman images | grep "sudosu-yx/tailnet"
+podman images | grep "sudosu201/tailnet"
 echo
 echo "Multi-arch manifest created:"
 podman manifest inspect "${PFX}${IMAGE}:${VERSION}" | jq .

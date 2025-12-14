@@ -1,6 +1,6 @@
 services:
   tailnet:
-    image: sudosu-yx/tailnet:latest
+    image: sudosu201/tailnet:latest
     build:
       context: .
       dockerfile: Dockerfile

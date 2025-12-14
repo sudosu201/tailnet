@@ -26,8 +26,8 @@ jobs:
     - name: Save Images as TAR
       run: |
         mkdir artifacts
-        podman save -o artifacts/tailnet-${VERSION}-amd64.tar localhost/sudosu-yx/tailnet:${VERSION}-amd64
-        podman save -o artifacts/tailnet-${VERSION}-arm64.tar localhost/sudosu-yx/tailnet:${VERSION}-arm64
+        podman save -o artifacts/tailnet-${VERSION}-amd64.tar localhost/sudosu201/tailnet:${VERSION}-amd64
+        podman save -o artifacts/tailnet-${VERSION}-arm64.tar localhost/sudosu201/tailnet:${VERSION}-arm64
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v4
