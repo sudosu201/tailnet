@@ -1,0 +1,72 @@
+#!/usr/bin/bash
+
+# Fail on any error
+set -e
+
+# Start tailscaled and wait for it to come up
+tailscaled \
+  --state=/tailscale/tailscaled.state \
+  --socket=/var/run/tailscale/tailscaled.sock \
+  --tun=userspace-networking \
+  &
+sleep 5
+
+# Set up MagicDNS
+cat <<EOF > /etc/resolv.conf
+nameserver 100.100.100.100
+nameserver 127.0.0.11
+search ${TAILNET_NAME} local
+options ndots:0
+EOF
+
+# Set default hostname if not provided
+if [ -z "${TAILSCALE_HOSTNAME}" ]; then
+  TAILSCALE_HOSTNAME="tailnet"
+fi
+
+# Log in to Tailscale if not already logged in
+if tailscale status 2>/dev/null | grep -q '100\.'; then
+  echo "Tailscale is already logged in. Skipping 'tailscale up'."
+else
+  echo "Tailscale not logged in. Using auth key..."
+  if [ -n "${TAILSCALE_AUTHKEY}" ]; then
+    tailscale up --authkey="${TAILSCALE_AUTHKEY}" \
+                 --hostname="${TAILSCALE_HOSTNAME}"
+  else
+    echo "WARNING: No auth key provided; skipping tailscale up."
+  fi
+fi
+
+INCLUDE_SABLIER=${INCLUDE_SABLIER:-true}
+
+if [ "$INCLUDE_SABLIER" = "true" ]; then
+  echo "Downloading Sablier v${SABLIER_VERSION}..."
+  # Create a temp dir to handle extraction of multiple files (LICENSE, README, etc.)
+  mkdir -p /tmp/sablier_install
+  
+  curl -L "https://github.com/sablierapp/sablier/releases/download/v${SABLIER_VERSION}/sablier-${SABLIER_VERSION}-linux-amd64.tar.gz" \
+    -o /tmp/sablier_install/sablier.tar.gz \
+    && tar -xzf /tmp/sablier_install/sablier.tar.gz -C /tmp/sablier_install \
+    && mv /tmp/sablier_install/sablier /usr/bin/sablier \
+    && chmod +x /usr/bin/sablier \
+    && rm -rf /tmp/sablier_install
+    
+  echo "Sablier installed successfully."
+  
+  echo "Starting Sablier..."
+  sablier start --configFile=/etc/sablier/sablier.yml &
+  sleep 2
+fi
+
+# Run caddy (in foreground with exec)
+if [ -f /etc/caddy/Caddyfile ]; then
+  # Use the Caddyfile in the /etc/caddy directory if it exists
+  if [ "${CADDY_WATCH}" = "true" ]; then
+    exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch
+  else
+    exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+  fi
+else
+  # Otherwise, run without a config
+  exec caddy run
+fi
