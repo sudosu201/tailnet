@@ -8,6 +8,7 @@ services:
     image: ghcr.io/sudosu201/tailnet:beta
     environment:
       - TAILSCALE_AUTHKEY=${TAILSCALE_AUTHKEY}
+      - TAILNET_NAME=${TAILNET_NAME}
     devices:
       - /dev/kvm
       - /dev/net/tun

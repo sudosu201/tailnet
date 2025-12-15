@@ -7,7 +7,6 @@ set -Eeuo pipefail
 
 cd /run
 
-. start.sh      # Startup hook
 . utils.sh      # Load functions
 . reset.sh      # Initialize system
 . server.sh     # Start webserver
@@ -21,6 +20,7 @@ cd /run
 . memory.sh     # Check available memory
 . config.sh     # Configure arguments
 . finish.sh     # Finish initialization
+. start.sh      # Startup hook as hook
 
 trap - ERR
 

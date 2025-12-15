@@ -16,7 +16,7 @@ LABEL org.opencontainers.image.licenses="AGPL-3.0"
 LABEL org.opencontainers.image.source="https://github.com/sudosu201/tailnet"
 LABEL org.opencontainers.image.url="https://github.com/sudosu201/tailnet"
 LABEL org.opencontainers.image.documentation="https://github.com/sudosu201/tailnet"
-LABEL org.opencontainers.image.vendor="Sudosu201"
+LABEL org.opencontainers.image.vendor="GNX Labs"
 LABEL org.opencontainers.image.created="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 LABEL org.opencontainers.image.revision="$(git rev-parse HEAD)"
 
