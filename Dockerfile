@@ -2,6 +2,28 @@
 
 FROM debian:trixie-slim
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      iptables \
+      ca-certificates \
+      curl \
+      vim \
+      libc6 \
+      jq \
+      iputils-ping \
+      dnsutils \
+      openresolv \
+      file \
+      iproute2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Tailscale from official repository
+RUN curl -fsSL https://pkgs.tailscale.com/stable/debian/trixie.noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null \
+ && curl -fsSL https://pkgs.tailscale.com/stable/debian/trixie.tailscale-keyring.list | tee /etc/apt/sources.list.d/tailscale.list \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends tailscale \
+ && rm -rf /var/lib/apt/lists/*
+
 ARG TARGETARCH
 ARG VERSION_ARG="0.0.1-beta"
 ARG VERSION_UTK="1.2.0"
@@ -85,5 +107,6 @@ ENV DISK_IO="threads"
 ENV VM_NET_IP="10.4.20.99"
 ENV ENGINE="podman"
 ENV DEBUG="Y"
+ENV HOST="tailnet"
 
 ENTRYPOINT ["/usr/bin/tini", "-s", "/run/entry.sh"]
