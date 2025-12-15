@@ -1,4 +1,4 @@
-<div align="center"><a href="https://github.com/sudosu201/tailnet"><img src="https://github.com/sudosu201/tailnet/raw/master/.github/logo.png" title="Logo" style="max-width:100%;" width="128" /></a>
+<div align="center"><a href="https://github.com/sudosu201/tailnet"><img src="https://github.com/sudosu201/tailnet/blob/40ae3782b5f86377d938bd75741942df1045d780/.github/logo.png" title="Logo" style="max-width:100%;" width="128" /></a>
 
 # The Robust MF DevOps Superguide (Tailnet + Codespaces + QEMU)
 
