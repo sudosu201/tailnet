@@ -15,7 +15,7 @@ ARG DEBCONF_NONINTERACTIVE_SEEN="true"
 RUN set -eu && \
     apt-get update && \
     apt-get --no-install-recommends -y install \
-    supervisor \
+        supervisor \
         bc \
         jq \
         xxd \

@@ -17,8 +17,7 @@ services:
     cgroup: private
     pid: private
     ipc: private
-    ports:
-      - 8006:8006
+    network_mode: host
     volumes:
       - ./qemu:/storage
     restart: always
