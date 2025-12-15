@@ -1,8 +1,0 @@
-services:
-  tailnet:
-    image: sudosu201/tailnet:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      args:
-        PLUGINS: "github.com/caddy-dns/cloudflare"
