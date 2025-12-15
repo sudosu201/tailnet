@@ -1,0 +1,21 @@
+{
+  "name": "Debian",
+  "service": "tailnet",
+  "containerEnv": {
+    "BOOT": "debian"
+  },
+  "forwardPorts": [
+    8006
+  ],
+  "portsAttributes": {
+    "8006": {
+      "label": "Web",
+      "onAutoForward": "notify"
+    }
+  },
+  "otherPortsAttributes": {
+    "onAutoForward": "ignore"
+  },
+  "dockerComposeFile": "../codespaces.yml",
+  "initializeCommand": "podman  system prune --all --force"
+}

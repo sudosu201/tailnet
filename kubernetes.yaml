@@ -1,0 +1,86 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+      name: tailnet-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 174Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+      name: tailnet
+  labels:
+        name: tailnet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tailnet
+  template:
+    metadata:
+      labels:
+        app: tailnet
+    spec:
+      containers:
+      -     name: tailnet
+        image: ghcr.io/sudosu201/tailnet:beta
+        env:
+        - name: BOOT
+          value: "proxmox"
+        - name: DISK_SIZE
+          value: "174G"
+        ports:
+          - containerPort: 8006
+            name: http
+            protocol: TCP
+          - containerPort: 5900
+            name: vnc
+            protocol: TCP
+        securityContext:
+          capabilities:
+            add:
+            - NET_ADMIN
+          privileged: true
+        volumeMounts:
+        - mountPath: /storage
+          name: storage
+        - mountPath: /dev/kvm
+          name: dev-kvm
+        - mountPath: /dev/net/tun
+          name: dev-tun
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claim    name: tailnet-pvc
+      - hostPath:
+          path: /dev/kvm
+        name: dev-kvm
+      - hostPath:
+          path: /dev/net/tun
+          type: CharDevice
+        name: dev-tun
+---
+apiVersion: v1
+kind: Service
+metadata:
+      name: tailnet
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: http
+      port: 8006
+      protocol: TCP
+      targetPort: 8006
+    - name: vnc
+      port: 5900
+      protocol: TCP
+      targetPort: 5900
+  selector:
+    app: qemu
+  type: ClusterIP

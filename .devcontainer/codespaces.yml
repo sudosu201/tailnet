@@ -1,0 +1,36 @@
+services:
+  tailnet:
+    image: ghcr.io/sudosu201/tailnet:beta
+    container_name: tailnet
+    devices:
+      - /dev/kvm
+      - /dev/net/tun
+      - /dev/vhost-net
+      - /dev/vhost-vsock
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+    volumes:
+      - ./qemu:/storage
+    restart: always
+    stop_grace_period: 2m
+    develop:
+      watch:
+        - action: sync
+          path: ./web/conf/defaults.json
+          target: /usr/share/novnc/defaults.json
+        - action: sync
+          path: ./web/conf/mandatory.json
+          target: /usr/share/novnc/mandatory.json
+        - action: sync
+          path: ./web/conf/nginx.conf
+          target: /etc/nginx/default.conf
+        - action: sync
+          path: ./web
+          target: /var/www/
+          ignore:
+            - conf/
+        - action: sync
+          path: ./src
+          target: /run/
